@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Animation SVG avec Image - Fenêtres pop-up espacées et désynchronisées</title>
+    <title>Animation SVG avec Image - Fenêtre pop-up</title>
     <style>
         body {
             display: flex;
@@ -19,27 +19,41 @@
             height: 750px;
         }
 
-        /* Animation pour le changement d'onglets */
-        #tab1, #tab2 {
-            transition: opacity 0.5s ease;
-        }
-
-        #tab1.hide, #tab2.hide {
-            opacity: 0;
-        }
-
         /* Animation pour les fenêtres pop-up */
-        #popup1, #popup2, #popup3 {
+        #popup1, #bottom-left-window {
             transform-origin: center;
             transition: transform 0.5s ease, opacity 0.5s ease;
         }
 
-        #popup1.show, #popup2.show, #popup3.show {
+        /* Fenêtre en biais avec position fixe */
+        #popup1.show {
+            transform: translate(17px, 91px) rotate(-21.5deg) skewX(-20Deg);
+            opacity: 1;
+            transform-origin: center;
+        }
+
+        #popup1.hide, #bottom-left-window.hide {
+            transform: scale(0);
+            opacity: 0;
+        }
+        
+        #bottom-left-window.show {
             transform: scale(1);
             opacity: 1;
         }
 
-        #popup1.hide, #popup2.hide, #popup3.hide {
+        /* Animation pour les mini-fenêtres */
+        .mini-window {
+            transform-origin: center;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+
+        .mini-window.show {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        .mini-window.hide {
             transform: scale(0);
             opacity: 0;
         }
@@ -50,43 +64,112 @@
         <!-- Image de fond -->
         <image href="/IMG-20250418-WA0033.jpg" x="0" y="0" width="600" height="750" preserveAspectRatio="xMidYMid slice" />
 
-        <!-- Écran du PC pour les onglets -->
-        <!-- <image id="tab1" x="140" y="170" width="320" height="200" href="page1.png" />
-        <image id="tab2" x="140" y="170" width="320" height="200" href="page2.png" class="hide" /> -->
-
-        <!-- Fenêtre pop-up 1 (à gauche : Site Vitrine) -->
+        <!-- Fenêtre pop-up 1 (à gauche : Site Vitrine) - En biais -->
         <g id="popup1" class="hide">
-            <rect x="145" y="220" width="120" height="80" rx="5" fill="#ffffff" stroke="#000" stroke-width="2" />
-            <text x="205" y="250" font-size="10" fill="#000" text-anchor="middle">Site Vitrine</text>
-            <text x="205" y="270" font-size="8" fill="#555" text-anchor="middle">Présentez-vous</text>
-            <!-- Bouton de fermeture (croix) -->
-            <g transform="translate(250, 225)">
-                <circle cx="0" cy="0" r="8" fill="#ff0000" />
-                <line x1="-4" y1="-4" x2="4" y2="4" stroke="#fff" stroke-width="2" />
-                <line x1="4" y1="-4" x2="-4" y2="4" stroke="#fff" stroke-width="2" />
+            <!-- Shadow effect for 3D feel with much slower fade-in -->
+            <rect x="148" y="223" width="235" height="150" rx="5" fill="#000000" opacity="0" class="shadow-effect">
+                <animate attributeName="opacity" 
+                         values="0;0.05;0.1;0.15;0.2;0.25;0.3" 
+                         dur="4s" 
+                         begin="0s" 
+                         fill="freeze" 
+                         calcMode="spline" 
+                         keySplines="0.25 0.1 0.25 1;0.25 0.1 0.25 1;0.25 0.1 0.25 1;0.25 0.1 0.25 1;0.25 0.1 0.25 1;0.25 0.1 0.25 1" />
+            </rect>
+            
+            <!-- Main window with extended and smoother gradient background fade -->
+            <rect x="145" y="220" width="235" height="150" rx="5" fill="#e0e0e0" stroke="#000" stroke-width="2" opacity="0" class="main-window">
+                <animate attributeName="opacity" 
+                         values="0;0.2;0.4;0.6;0.8;0.9;1" 
+                         dur="4s" 
+                         begin="0s" 
+                         fill="freeze" 
+                         calcMode="spline" 
+                         keySplines="0.25 0.1 0.25 1;0.25 0.1 0.25 1;0.25 0.1 0.25 1;0.25 0.1 0.25 1;0.25 0.1 0.25 1;0.25 0.1 0.25 1" />
+            </rect>
+            
+            <!-- Texte qui apparaît lettre par lettre - DÉCALÉ DE 40PX À DROITE (+10PX) - Taille réduite de 20% -->
+            <g opacity="0">
+                <animate attributeName="opacity" 
+                         from="0" to="1" 
+                         dur="2s" 
+                         begin="2s" 
+                         fill="freeze" />
+                <text x="210" y="250" font-size="16" fill="#000" id="typing-text-container">
+                    <tspan class="typing-text" id="typing-text-1" x="255" text-anchor="middle">Besoin d'un site clé en main?</tspan>
+                </text>
+                <text x="210" y="280" font-size="16" fill="#000" id="typing-text-container-2">
+                    <tspan class="typing-text" id="typing-text-2" x="255" text-anchor="middle">Contactez-nous et lancez-vous!</tspan>
+                </text>
             </g>
-        </g>
-
-        <!-- Fenêtre pop-up 2 (au centre : Contactez-Nous) -->
-        <g id="popup2" class="hide">
-            <rect x="270" y="220" width="120" height="80" rx="5" fill="#ffffff" stroke="#000" stroke-width="2" />
-            <text x="330" y="250" font-size="10" fill="#000" text-anchor="middle">Contactez-Nous</text>
-            <text x="330" y="270" font-size="8" fill="#555" text-anchor="middle">Entrez vos infos</text>
-            <!-- Bouton de fermeture (croix) -->
-            <g transform="translate(375, 225)">
-                <circle cx="0" cy="0" r="8" fill="#ff0000" />
-                <line x1="-4" y1="-4" x2="4" y2="4" stroke="#fff" stroke-width="2" />
-                <line x1="4" y1="-4" x2="-4" y2="4" stroke="#fff" stroke-width="2" />
+            
+            <!-- Mini-fenêtres à l'intérieur de la fenêtre en biais -->
+            <!-- Mini-fenêtre 1 - Besoin -->
+            <g id="mini-window1" class="mini-window hide">
+                <rect x="150" y="260" width="60" height="40" rx="3" fill="#ffffff" stroke="#333" stroke-width="1" />
+                <text x="180" y="285" font-size="10" fill="#000" text-anchor="middle">Besoin</text>
+                <g transform="translate(200, 265)" class="mini-close-btn" data-window="mini-window1">
+                    <circle cx="0" cy="0" r="5" fill="#ff0000" />
+                    <line x1="-2.5" y1="-2.5" x2="2.5" y2="2.5" stroke="#fff" stroke-width="1.5" />
+                    <line x1="2.5" y1="-2.5" x2="-2.5" y2="2.5" stroke="#fff" stroke-width="1.5" />
+                </g>
             </g>
+            
+            <!-- Mini-fenêtre 2 - d'un site -->
+            <g id="mini-window2" class="mini-window hide">
+                <rect x="180" y="275" width="60" height="40" rx="3" fill="#ffffff" stroke="#333" stroke-width="1" />
+                <text x="210" y="300" font-size="10" fill="#000" text-anchor="middle">d'un site</text>
+                <g transform="translate(230, 280)" class="mini-close-btn" data-window="mini-window2">
+                    <circle cx="0" cy="0" r="5" fill="#ff0000" />
+                    <line x1="-2.5" y1="-2.5" x2="2.5" y2="2.5" stroke="#fff" stroke-width="1.5" />
+                    <line x1="2.5" y1="-2.5" x2="-2.5" y2="2.5" stroke="#fff" stroke-width="1.5" />
+                </g>
+            </g>
+            
+            <!-- Mini-fenêtre 3 - clé en main -->
+            <g id="mini-window3" class="mini-window hide">
+                <rect x="210" y="255" width="60" height="40" rx="3" fill="#ffffff" stroke="#333" stroke-width="1" />
+                <text x="240" y="280" font-size="10" fill="#000" text-anchor="middle">clé en main</text>
+                <g transform="translate(260, 260)" class="mini-close-btn" data-window="mini-window3">
+                    <circle cx="0" cy="0" r="5" fill="#ff0000" />
+                    <line x1="-2.5" y1="-2.5" x2="2.5" y2="2.5" stroke="#fff" stroke-width="1.5" />
+                    <line x1="2.5" y1="-2.5" x2="-2.5" y2="2.5" stroke="#fff" stroke-width="1.5" />
+                </g>
+            </g>
+            
+            <!-- Mini-fenêtre 4 - contactez-nous -->
+            <g id="mini-window4" class="mini-window hide">
+                <rect x="165" y="290" width="60" height="40" rx="3" fill="#ffffff" stroke="#333" stroke-width="1" />
+                <text x="195" y="315" font-size="10" fill="#000" text-anchor="middle">contactez-nous</text>
+                <g transform="translate(215, 295)" class="mini-close-btn" data-window="mini-window4">
+                    <circle cx="0" cy="0" r="5" fill="#ff0000" />
+                    <line x1="-2.5" y1="-2.5" x2="2.5" y2="2.5" stroke="#fff" stroke-width="1.5" />
+                    <line x1="2.5" y1="-2.5" x2="-2.5" y2="2.5" stroke="#fff" stroke-width="1.5" />
+                </g>
+            </g>
+            
+            <!-- Mini-fenêtre 5 - et lancez-vous -->
+            <g id="mini-window5" class="mini-window hide">
+                <rect x="195" y="305" width="60" height="40" rx="3" fill="#ffffff" stroke="#333" stroke-width="1" />
+                <text x="225" y="330" font-size="10" fill="#000" text-anchor="middle">et lancez-vous</text>
+                <g transform="translate(245, 310)" class="mini-close-btn" data-window="mini-window5">
+                    <circle cx="0" cy="0" r="5" fill="#ff0000" />
+                    <line x1="-2.5" y1="-2.5" x2="2.5" y2="2.5" stroke="#fff" stroke-width="1.5" />
+                    <line x1="2.5" y1="-2.5" x2="-2.5" y2="2.5" stroke="#fff" stroke-width="1.5" />
+                </g>
+            </g>
+            
+            <!-- Bouton de fermeture supprimé -->
         </g>
-
-        <!-- Fenêtre pop-up 3 (à droite : Devenez Propriétaire) -->
-        <g id="popup3" class="hide">
-            <rect x="395" y="220" width="120" height="80" rx="5" fill="#ffffff" stroke="#000" stroke-width="2" />
-            <text x="455" y="250" font-size="10" fill="#000" text-anchor="middle">Devenez Propriétaire</text>
-            <text x="455" y="270" font-size="8" fill="#555" text-anchor="middle">Achetez maintenant</text>
+        
+        <!-- Fenêtre création d'un site - Déplacée 30px à droite sur l'image principale -->
+        <g id="bottom-left-window" class="hide">
+            <rect x="280" y="400" width="200" height="120" rx="5" fill="#ffffff" stroke="#000" stroke-width="2" />
+            <text x="380" y="440" font-size="14" fill="#000" text-anchor="middle">Création de site web</text>
+            <text x="380" y="465" font-size="12" fill="#555" text-anchor="middle">Discutez avec notre équipe</text>
+            <text x="380" y="490" font-size="12" fill="#555" text-anchor="middle">+33 6 XX XX XX XX</text>
             <!-- Bouton de fermeture (croix) -->
-            <g transform="translate(500, 225)">
+            <g transform="translate(465, 405)" class="mini-close-btn" data-window="bottom-left-window">
                 <circle cx="0" cy="0" r="8" fill="#ff0000" />
                 <line x1="-4" y1="-4" x2="4" y2="4" stroke="#fff" stroke-width="2" />
                 <line x1="4" y1="-4" x2="-4" y2="4" stroke="#fff" stroke-width="2" />
@@ -95,68 +178,285 @@
     </svg>
 
     <script>
-        // Gestion du changement d'onglets
-        const tab1 = document.getElementById('tab1');
-        const tab2 = document.getElementById('tab2');
-        let isTab1Visible = true;
-
-        function switchTabs() {
-            if (isTab1Visible) {
-                tab1.classList.add('hide');
-                tab2.classList.remove('hide');
-            } else {
-                tab1.classList.remove('hide');
-                tab2.classList.add('hide');
-            }
-            isTab1Visible = !isTab1Visible;
-        }
-
         // Gestion des fenêtres pop-up
         const popup1 = document.getElementById('popup1');
-        const popup2 = document.getElementById('popup2');
-        const popup3 = document.getElementById('popup3');
         let isPopup1Visible = false;
-        let isPopup2Visible = false;
-        let isPopup3Visible = false;
 
-        function togglePopup1() {
-            if (isPopup1Visible) {
-                popup1.classList.remove('show');
-                popup1.classList.add('hide');
+        // Récupération des mini-fenêtres
+        const miniWindow1 = document.getElementById('mini-window1');
+        const miniWindow2 = document.getElementById('mini-window2');
+        const miniWindow3 = document.getElementById('mini-window3');
+        const miniWindow4 = document.getElementById('mini-window4');
+        const miniWindow5 = document.getElementById('mini-window5');
+        const bottomLeftWindow = document.getElementById('bottom-left-window');
+        
+        let isMiniWindow1Visible = false;
+        let isMiniWindow2Visible = false;
+        let isMiniWindow3Visible = false;
+        let isMiniWindow4Visible = false;
+        let isMiniWindow5Visible = false;
+        let isBottomLeftWindowVisible = false;
+
+        function togglePopup(popup, isVisible) {
+            if (isVisible) {
+                popup.classList.remove('show');
+                popup.classList.add('hide');
+                return false;
             } else {
-                popup1.classList.remove('hide');
-                popup1.classList.add('show');
+                popup.classList.remove('hide');
+                popup.classList.add('show');
+                return true;
             }
-            isPopup1Visible = !isPopup1Visible;
         }
 
-        function togglePopup2() {
-            if (isPopup2Visible) {
-                popup2.classList.remove('show');
-                popup2.classList.add('hide');
+        function toggleMiniWindow(window, isVisible) {
+            if (isVisible) {
+                window.classList.remove('show');
+                window.classList.add('hide');
+                return false;
             } else {
-                popup2.classList.remove('hide');
-                popup2.classList.add('show');
+                window.classList.remove('hide');
+                window.classList.add('show');
+                return true;
             }
-            isPopup2Visible = !isPopup2Visible;
         }
 
-        function togglePopup3() {
-            if (isPopup3Visible) {
-                popup3.classList.remove('show');
-                popup3.classList.add('hide');
-            } else {
-                popup3.classList.remove('hide');
-                popup3.classList.add('show');
+        // Fonction pour animer le texte lettre par lettre
+        function animateText() {
+            const text1 = "Besoin d'un site clé en main?";
+            const text2 = "Contactez-nous et lancez-vous!";
+            const text1Element = document.getElementById('typing-text-1');
+            const text2Element = document.getElementById('typing-text-2');
+            
+            if (text1Element && text2Element) {
+                text1Element.textContent = '';
+                text2Element.textContent = '';
+                
+                // Attendre que l'animation de la fenêtre soit terminée
+                setTimeout(() => {
+                    let i = 0;
+                    let j = 0;
+                    
+                    // Première ligne de texte
+                    const typeWriter1 = setInterval(() => {
+                        if (i < text1.length) {
+                            text1Element.textContent += text1.charAt(i);
+                            i++;
+                        } else {
+                            clearInterval(typeWriter1);
+                            
+                            // Seconde ligne de texte (commence après la première)
+                            const typeWriter2 = setInterval(() => {
+                                if (j < text2.length) {
+                                    text2Element.textContent += text2.charAt(j);
+                                    j++;
+                                } else {
+                                    clearInterval(typeWriter2);
+                                    
+                                    // Lancer l'affichage des mini-fenêtres APRÈS que tout le texte soit affiché
+                                    console.log("Texte completé, lancement des mini-fenêtres dans 2 secondes");
+                                    
+                                    // Afficher la fenêtre "Création d'un site" immédiatement après la fin du texte
+                                    isBottomLeftWindowVisible = togglePopup(bottomLeftWindow, isBottomLeftWindowVisible);
+                                    console.log("Fenêtre en bas à gauche affichée immédiatement");
+                                    
+                                    // Délai avant de commencer à afficher les mini-fenêtres
+                                    setTimeout(() => {
+                                        // Mini-fenêtre 1: Besoin
+                                        setTimeout(() => {
+                                            if (miniWindow1 && miniWindow1.parentNode) {
+                                                miniWindow1.parentNode.appendChild(miniWindow1);
+                                            }
+                                            if (miniWindow1) {
+                                                isMiniWindow1Visible = toggleMiniWindow(miniWindow1, isMiniWindow1Visible);
+                                                console.log("Mini-fenêtre 'Besoin' ouverte");
+                                            }
+                                        }, 2000);
+                                        
+                                        // Mini-fenêtre 3: clé en main (mais en utilisant miniWindow2)
+                                        setTimeout(() => {
+                                            if (miniWindow2 && miniWindow2.parentNode) {
+                                                miniWindow2.parentNode.appendChild(miniWindow2);
+                                            }
+                                            if (miniWindow2) {
+                                                isMiniWindow2Visible = toggleMiniWindow(miniWindow2, isMiniWindow2Visible);
+                                                console.log("Mini-fenêtre 'clé en main' ouverte");
+                                            }
+                                        }, 3000);
+                                        
+                                        // Mini-fenêtre 2: d'un site (mais en utilisant miniWindow3)
+                                        setTimeout(() => {
+                                            if (miniWindow3 && miniWindow3.parentNode) {
+                                                miniWindow3.parentNode.appendChild(miniWindow3);
+                                            }
+                                            if (miniWindow3) {
+                                                isMiniWindow3Visible = toggleMiniWindow(miniWindow3, isMiniWindow3Visible);
+                                                console.log("Mini-fenêtre 'd'un site' ouverte");
+                                            }
+                                        }, 4000);
+                                        
+                                        // Mini-fenêtre 5: et lancez-vous (mais en utilisant miniWindow4)
+                                        setTimeout(() => {
+                                            if (miniWindow4 && miniWindow4.parentNode) {
+                                                miniWindow4.parentNode.appendChild(miniWindow4);
+                                            }
+                                            if (miniWindow4) {
+                                                isMiniWindow4Visible = toggleMiniWindow(miniWindow4, isMiniWindow4Visible);
+                                                console.log("Mini-fenêtre 'et lancez-vous' ouverte");
+                                            }
+                                        }, 5000);
+                                        
+                                        // Mini-fenêtre 4: contactez-nous (mais en utilisant miniWindow5)
+                                        setTimeout(() => {
+                                            if (miniWindow5 && miniWindow5.parentNode) {
+                                                miniWindow5.parentNode.appendChild(miniWindow5);
+                                            }
+                                            if (miniWindow5) {
+                                                isMiniWindow5Visible = toggleMiniWindow(miniWindow5, isMiniWindow5Visible);
+                                                console.log("Mini-fenêtre 'contactez-nous' ouverte");
+                                            }
+                                        }, 6000);
+                                        
+                                    }, 2000); // Délai initial de 2 secondes
+                                }
+                            }, 100);
+                        }
+                    }, 100);
+                }, 2000); // Attendre que l'animation de la fenêtre soit terminée
             }
-            isPopup3Visible = !isPopup3Visible;
         }
 
-        // Timing des animations
-        setInterval(switchTabs, 3000); // Change d'onglet toutes les 3 secondes
-        setTimeout(() => setInterval(togglePopup1, 4000), 2000); // Fenêtre 1 : commence après 2s, cycle toutes les 4s
-        setTimeout(() => setInterval(togglePopup2, 4000), 3000); // Fenêtre 2 : commence après 3s, cycle toutes les 4s
-        setTimeout(() => setInterval(togglePopup3, 4000), 4000); // Fenêtre 3 : commence après 4s, cycle toutes les 4s
+        // Affichage initial des fenêtres pop-up
+        setTimeout(() => {
+            isPopup1Visible = togglePopup(popup1, isPopup1Visible);
+            console.log("Fenêtre 1 (Écran) affichée");
+            
+            // Démarrer l'animation du texte après que la fenêtre commence à apparaître
+            animateText();
+            
+            // Les mini-fenêtres apparaîtront uniquement après la fin de l'animation du texte principal
+            // Cette partie est maintenant gérée dans la fonction animateText()
+            
+            // Fermeture des mini-fenêtres après un certain temps
+            setTimeout(() => {
+                if (miniWindow1 && miniWindow1.classList.contains('show')) {
+                    isMiniWindow1Visible = toggleMiniWindow(miniWindow1, isMiniWindow1Visible);
+                    console.log("Mini-fenêtre 1 fermée");
+                }
+            }, 10000);
+            
+            setTimeout(() => {
+                if (miniWindow2 && miniWindow2.classList.contains('show')) {
+                    isMiniWindow2Visible = toggleMiniWindow(miniWindow2, isMiniWindow2Visible);
+                    console.log("Mini-fenêtre 2 fermée");
+                }
+            }, 12000);
+            
+            setTimeout(() => {
+                if (miniWindow3 && miniWindow3.classList.contains('show')) {
+                    isMiniWindow3Visible = toggleMiniWindow(miniWindow3, isMiniWindow3Visible);
+                    console.log("Mini-fenêtre 3 fermée");
+                }
+            }, 11000);
+            
+            setTimeout(() => {
+                if (miniWindow4 && miniWindow4.classList.contains('show')) {
+                    isMiniWindow4Visible = toggleMiniWindow(miniWindow4, isMiniWindow4Visible);
+                    console.log("Mini-fenêtre 4 fermée");
+                }
+            }, 13000);
+            
+            setTimeout(() => {
+                if (miniWindow5 && miniWindow5.classList.contains('show')) {
+                    isMiniWindow5Visible = toggleMiniWindow(miniWindow5, isMiniWindow5Visible);
+                    console.log("Mini-fenêtre 5 fermée");
+                }
+            }, 14000);
+            
+            // Réouverture cyclique des mini-fenêtres
+            setInterval(() => {
+                if (miniWindow1) {
+                    isMiniWindow1Visible = toggleMiniWindow(miniWindow1, isMiniWindow1Visible);
+                    setTimeout(() => {
+                        if (miniWindow1) {
+                            isMiniWindow1Visible = toggleMiniWindow(miniWindow1, isMiniWindow1Visible);
+                        }
+                    }, 2000);
+                }
+            }, 10000);
+            
+            setInterval(() => {
+                if (miniWindow2) {
+                    isMiniWindow2Visible = toggleMiniWindow(miniWindow2, isMiniWindow2Visible);
+                    setTimeout(() => {
+                        if (miniWindow2) {
+                            isMiniWindow2Visible = toggleMiniWindow(miniWindow2, isMiniWindow2Visible);
+                        }
+                    }, 2000);
+                }
+            }, 11000);
+            
+            setInterval(() => {
+                if (miniWindow3) {
+                    isMiniWindow3Visible = toggleMiniWindow(miniWindow3, isMiniWindow3Visible);
+                    setTimeout(() => {
+                        if (miniWindow3) {
+                            isMiniWindow3Visible = toggleMiniWindow(miniWindow3, isMiniWindow3Visible);
+                        }
+                    }, 2000);
+                }
+            }, 12000);
+            
+            setInterval(() => {
+                if (miniWindow4) {
+                    isMiniWindow4Visible = toggleMiniWindow(miniWindow4, isMiniWindow4Visible);
+                    setTimeout(() => {
+                        if (miniWindow4) {
+                            isMiniWindow4Visible = toggleMiniWindow(miniWindow4, isMiniWindow4Visible);
+                        }
+                    }, 2000);
+                }
+            }, 13000);
+            
+            setInterval(() => {
+                if (miniWindow5) {
+                    isMiniWindow5Visible = toggleMiniWindow(miniWindow5, isMiniWindow5Visible);
+                    setTimeout(() => {
+                        if (miniWindow5) {
+                            isMiniWindow5Visible = toggleMiniWindow(miniWindow5, isMiniWindow5Visible);
+                        }
+                    }, 2000);
+                }
+            }, 14000);
+            
+        }, 2000);
+
+        // La gestion du bouton de fermeture de la fenêtre principale a été supprimée car la croix a été enlevée
+        
+        // Gestion des boutons de fermeture des mini-fenêtres
+        document.querySelectorAll('.mini-close-btn').forEach(button => {
+            button.addEventListener('click', (e) => {
+                e.stopPropagation(); // Empêcher la propagation de l'événement
+                const windowId = button.getAttribute('data-window');
+                const miniWindow = document.getElementById(windowId);
+                
+                if (windowId === 'mini-window1') {
+                    isMiniWindow1Visible = toggleMiniWindow(miniWindow, isMiniWindow1Visible);
+                } else if (windowId === 'mini-window2') {
+                    isMiniWindow2Visible = toggleMiniWindow(miniWindow, isMiniWindow2Visible);
+                } else if (windowId === 'mini-window3') {
+                    isMiniWindow3Visible = toggleMiniWindow(miniWindow, isMiniWindow3Visible);
+                } else if (windowId === 'mini-window4') {
+                    isMiniWindow4Visible = toggleMiniWindow(miniWindow, isMiniWindow4Visible);
+                } else if (windowId === 'mini-window5') {
+                    isMiniWindow5Visible = toggleMiniWindow(miniWindow, isMiniWindow5Visible);
+                } else if (windowId === 'bottom-left-window') {
+                    isBottomLeftWindowVisible = togglePopup(miniWindow, isBottomLeftWindowVisible);
+                }
+                
+                console.log(`Fenêtre ${windowId} fermée manuellement`);
+            });
+        });
     </script>
 </body>
 </html>
